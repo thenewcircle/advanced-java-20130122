@@ -21,36 +21,12 @@ public class ShapesTest {
 	}
 
 	@Test
-	public void equalSquaresMustBeEqual() {
+	public void copyRectangleWithWidthShouldChangeOnlyWidth() {
 		for (int i = 0; i < 100; i++) {
-			Square
-				s1 = arbitrarySquare(),
-				s2 = new Square(s1.getWidth());
-			assertEquals(s2, s1);
-		}
-	}
-
-	@Test
-	public void setRectangleWidthShouldChangeOnlyWidth() {
-		for (int i = 0; i < 100; i++) {
-			Rectangle r = arbitraryRectangle();
-			int
-				width = RANDOM.nextInt(50),
-				height = r.getHeight();
-			r.setWidth(width);
-			assertEquals(width, r.getWidth());
-			assertEquals(height, r.getHeight());
-		}
-	}
-
-	@Test
-	public void squaresMustBeSquare() {
-		for (int i = 0; i < 100; i++) {
-			Square s = arbitrarySquare();
-			int side = RANDOM.nextInt(50);
-			s.setWidth(side);
-			assertEquals(side, s.getWidth());
-			assertEquals(side, s.getHeight());
+			Rectangle
+				r1 = arbitraryRectangle(),
+				r2 = r1.copyWithWidth(RANDOM.nextInt(50));
+			assertEquals(r1.getHeight(), r2.getHeight());
 		}
 	}
 
