@@ -55,7 +55,9 @@ public class ShapesTest {
 	}
 
 	private Rectangle arbitraryRectangle() {
-		return new Rectangle(RANDOM.nextInt(50), RANDOM.nextInt(50));
+		return RANDOM.nextBoolean()
+			? new Rectangle(RANDOM.nextInt(50), RANDOM.nextInt(50))
+			: arbitrarySquare();
 	}
 
 	private Square arbitrarySquare() {
