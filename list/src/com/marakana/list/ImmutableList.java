@@ -1,0 +1,32 @@
+package com.marakana.list;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ImmutableList<E> {
+
+	private final List<E> list;
+
+	public ImmutableList() {
+		this.list = new ArrayList<E>();
+	}
+
+	private ImmutableList(List<E> list) {
+		this.list = list;
+	}
+
+	public ImmutableList<E> prepend(E element) {
+		List<E> list = new ArrayList<E>();
+		list.add(element);
+		list.addAll(this.list);
+		return new ImmutableList<E>(list);
+	}
+
+	public E head() {
+		return list.isEmpty() ? null : list.get(0);
+	}
+
+	public ImmutableList<E> tail() {
+		return list.size() < 1 ? null : new ImmutableList<E>(list.subList(1, list.size()));
+	}
+}
