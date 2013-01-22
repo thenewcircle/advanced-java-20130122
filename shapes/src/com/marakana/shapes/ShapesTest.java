@@ -13,7 +13,10 @@ public class ShapesTest {
 	@Test
 	public void equalRectanglesMustBeEqual() {
 		for (int i = 0; i < 100; i++) {
-			// TODO
+			Rectangle
+				r1 = arbitraryRectangle(),
+				r2 = new Rectangle(r1.getWidth(), r1.getHeight());
+			assertEquals(r2, r1);
 		}
 	}
 
