@@ -19,7 +19,7 @@ public final class ImmutableList<E> {
 		return new ImmutableList<E>(element, this);
 	}
 
-	public <E2> ImmutableList<E2> transform(Function<E, E2> fn) {
+	public <E2> ImmutableList<E2> transform(Function<? super E, ? extends E2> fn) {
 		return tail == null
 			? new ImmutableList<E2>()
 			: new ImmutableList<E2>(fn.apply(head), tail.transform(fn));
