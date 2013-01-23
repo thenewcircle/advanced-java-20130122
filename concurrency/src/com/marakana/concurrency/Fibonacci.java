@@ -6,7 +6,6 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class Fibonacci {
 
@@ -17,7 +16,7 @@ public class Fibonacci {
 	}
 
 	public static class FibonacciTask implements Runnable {
-		
+
 		private final Logger logger;
 
 		public FibonacciTask(Logger logger) {
@@ -32,39 +31,39 @@ public class Fibonacci {
 	}
 
 	public static class Logger implements Runnable {
-		
+
 		private final Queue<String> messages = new LinkedList<String>();
 
 		@Override
 		public void run() {
 			while (true) {
-				if (messages.isEmpty()) {
-					Thread.yield();
-				} else {
-					System.out.println(messages.remove());
+				synchronized (messages) {
+					if (messages.isEmpty()) {
+						Thread.yield();
+					} else {
+						System.out.println(messages.remove());
+					}
 				}
 			}
 		}
 
 		public void log(String message) {
-			messages.add(message);
+			synchronized (messages) {
+				messages.add(message);
+			}
 		}
 
 	}
 
 	public static void main(String[] args) throws Exception {
-		
+
 		ExecutorService pool = Executors.newFixedThreadPool(10);
 		Logger logger = new Logger();
 		pool.execute(logger);
 
-		for (int i = 0; i < 20; i++) {
+		while (true) {
 			pool.execute(new FibonacciTask(logger));
 		}
-
-		pool.shutdown();
-		pool.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-		System.out.println("done");
 	}
 
 }
