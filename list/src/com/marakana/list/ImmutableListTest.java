@@ -23,13 +23,20 @@ public class ImmutableListTest {
 	};
 
 	@Test
-	public void transformMustTransform() {
+	public void doubleMustTransform() {
 		ImmutableList<Integer>
 			l1 = new ImmutableList<Integer>().prepend(3).prepend(2).prepend(1),
 			l2 = new ImmutableList<Integer>().prepend(6).prepend(4).prepend(2);
 		assertEquals(l2, l1.transform(DOUBLE));
 	}
 
+	@Test
+	public void toStringMustTransform() {
+		ImmutableList<Integer> l1 = new ImmutableList<Integer>().prepend(3).prepend(2).prepend(1);
+		ImmutableList<String> l2 = new ImmutableList<String>().prepend("3").prepend("2").prepend("1");
+		assertEquals(l2, l1.transform(TO_STRING));
+	}
+	
 	@Test
 	public void listDecompositionMustBeDualOfListComposition() {
 		for (int i = 0; i < 100; i++) {
