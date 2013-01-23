@@ -1,6 +1,8 @@
 package com.marakana.concurrency;
 
 import java.math.BigInteger;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,20 +26,30 @@ public class Fibonacci {
 
 		@Override
 		public void run() {
-			int n = RANDOM.nextInt(40);
+			int n = RANDOM.nextInt(30);
 			logger.log(String.format("fib(%d) = %s", n, fib(n)));
 		}
 	}
 
 	public static class Logger implements Runnable {
+		
+		private final Queue<String> messages = new LinkedList<String>();
+
 		@Override
 		public void run() {
-			// TODO
+			while (true) {
+				if (messages.isEmpty()) {
+					Thread.yield();
+				} else {
+					System.out.println(messages.remove());
+				}
+			}
 		}
 
 		public void log(String message) {
-			System.out.println(message); // FIXME: this is synchronous!!
+			messages.add(message);
 		}
+
 	}
 
 	public static void main(String[] args) throws Exception {
