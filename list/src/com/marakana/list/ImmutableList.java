@@ -1,40 +1,30 @@
 package com.marakana.list;
 
-import java.util.ArrayList;
-import java.util.List;
+public final class ImmutableList<E> {
 
-public class ImmutableList<E> {
-
-	private final List<E> list;
+	public final E head;
+	public final ImmutableList<E> tail;
 
 	public ImmutableList() {
-		this.list = new ArrayList<E>();
+		this.head = null;
+		this.tail = null;
 	}
 
-	private ImmutableList(List<E> list) {
-		this.list = list;
+	private ImmutableList(E head, ImmutableList<E> tail) {
+		this.head = head;
+		this.tail = tail;
 	}
 
 	public ImmutableList<E> prepend(E element) {
-		List<E> list = new ArrayList<E>();
-		list.add(element);
-		list.addAll(this.list);
-		return new ImmutableList<E>(list);
-	}
-
-	public E head() {
-		return list.isEmpty() ? null : list.get(0);
-	}
-
-	public ImmutableList<E> tail() {
-		return list.size() < 1 ? null : new ImmutableList<E>(list.subList(1, list.size()));
+		return new ImmutableList<E>(element, this);
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((list == null) ? 0 : list.hashCode());
+		result = prime * result + ((head == null) ? 0 : head.hashCode());
+		result = prime * result + ((tail == null) ? 0 : tail.hashCode());
 		return result;
 	}
 
@@ -48,10 +38,15 @@ public class ImmutableList<E> {
 		if (!(obj instanceof ImmutableList))
 			return false;
 		ImmutableList other = (ImmutableList) obj;
-		if (list == null) {
-			if (other.list != null)
+		if (head == null) {
+			if (other.head != null)
 				return false;
-		} else if (!list.equals(other.list))
+		} else if (!head.equals(other.head))
+			return false;
+		if (tail == null) {
+			if (other.tail != null)
+				return false;
+		} else if (!tail.equals(other.tail))
 			return false;
 		return true;
 	}

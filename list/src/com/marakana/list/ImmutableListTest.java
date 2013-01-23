@@ -17,8 +17,8 @@ public class ImmutableListTest {
 			ImmutableList<Integer>
 				tail = arbitraryList(),
 				composed = tail.prepend(head);
-			assertEquals(head, composed.head());
-			assertEquals(tail, composed.tail());
+			assertSame(head, composed.head);
+			assertSame(tail, composed.tail);
 		}
 	}
 	
