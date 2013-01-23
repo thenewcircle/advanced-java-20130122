@@ -16,3 +16,4 @@ Immutability
 
 * safer class inheritance: easier to reason about polymorphism
 * safe structural (value) identity
+* sometimes provides performance benefits due to sharing
