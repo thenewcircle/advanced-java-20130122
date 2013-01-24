@@ -43,7 +43,7 @@ public class Fibonacci {
 		Logger logger = new Logger();
 		pool.execute(logger);
 
-		while (true) {
+		for (int i = 0; i < 9; i++) {
 			FibonacciTask task = new FibonacciTask(logger);
 			pool.execute(task);
 			task.tell(FIB);
