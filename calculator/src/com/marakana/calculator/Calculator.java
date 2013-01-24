@@ -4,41 +4,52 @@ import java.util.Stack;
 
 public class Calculator {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+	private static boolean handleNumber(String token, Stack<Integer> stack) {
+		try {
+			stack.push(Integer.parseInt(token));
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
 
+	private static boolean handleOperator(String token, Stack<Integer> stack) {
+		if ("+".equals(token)) {
+			int rhs = stack.pop(), lhs = stack.pop();
+			stack.push(lhs + rhs);
+			return true;
+		} else if ("-".equals(token)) {
+			int rhs = stack.pop(), lhs = stack.pop();
+			stack.push(lhs - rhs);
+			return true;
+		} else if ("*".equals(token)) {
+			int rhs = stack.pop(), lhs = stack.pop();
+			stack.push(lhs * rhs);
+			return true;
+		} else if ("/".equals(token)) {
+			int rhs = stack.pop(), lhs = stack.pop();
+			stack.push(lhs / rhs);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static int calculate(String expression) {
+		Stack<Integer> stack = new Stack<Integer>();
+		for (String token : expression.split(" ")) {
+			if (!handleNumber(token, stack) && !handleOperator(token, stack)) {
+				throw new IllegalArgumentException("unrecognized token: " + token);
+			}
+		}
+		return stack.pop();
+	}
+
+	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.err.println("Usage: Calculator <expression>");
 			return;
 		}
-
-		Stack<Integer> stack = new Stack<Integer>();
-		for (String token : args[0].split(" ")) {
-			try {
-				int number = Integer.parseInt(token);
-				stack.push(number);
-			} catch (NumberFormatException e) {
-				if ("+".equals(token)) {
-					int rhs = stack.pop(), lhs = stack.pop();
-					stack.push(lhs + rhs);
-				} else if ("-".equals(token)) {
-					int rhs = stack.pop(), lhs = stack.pop();
-					stack.push(lhs - rhs);
-				} else if ("*".equals(token)) {
-					int rhs = stack.pop(), lhs = stack.pop();
-					stack.push(lhs * rhs);
-				} else if ("/".equals(token)) {
-					int rhs = stack.pop(), lhs = stack.pop();
-					stack.push(lhs / rhs);
-				} else {
-					throw new IllegalArgumentException("garbage in expression");
-				}
-			}
-		}
-
-		System.out.println(stack.pop());
+		System.out.println(calculate(args[0]));
 	}
-
 }
