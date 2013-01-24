@@ -23,6 +23,7 @@ Concurrency
 
 * using built-in concurrency primitives (synchronized, wait/notify) is too hard
 * implement the producer-consumer pattern using BlockingQueue
+* don't reinvent the wheel: use akka!
 
 Videos
 ------
