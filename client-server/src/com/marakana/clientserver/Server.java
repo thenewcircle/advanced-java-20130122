@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -12,16 +14,23 @@ import com.marakana.concurrency.Actor;
 
 public class Server {
 
-	public static enum Message {
-		SHUTDOWN
+	public static class Logger extends Actor {
+		protected void receive(Object message) {
+			System.out.println(message);
+		}
 	}
 
 	public static class Worker extends Actor {
+
+		private final Logger logger;
+
+		public Worker(Logger logger) {
+			this.logger = logger;
+		}
+
 		@Override
 		protected void receive(Object message) {
-			if (message == Message.SHUTDOWN) {
-				shutdown();
-			} else if (message instanceof Socket) {
+			if (message instanceof Socket) {
 				work((Socket) message);
 			}
 		}
@@ -32,7 +41,7 @@ public class Server {
 					BufferedReader in = new BufferedReader(
 							new InputStreamReader(client.getInputStream()));
 					try {
-						System.out.println(in.readLine());
+						logger.tell(in.readLine());
 					} finally {
 						in.close();
 					}
@@ -40,7 +49,7 @@ public class Server {
 					client.close();
 				}
 			} catch (IOException e) {
-				// TODO: do something with this exception
+				logger.tell(e);
 			}
 		}
 	}
@@ -48,11 +57,25 @@ public class Server {
 	public static void main(String[] args) {
 		ExecutorService pool = Executors.newCachedThreadPool();
 
+		Logger logger = new Logger();
+		pool.execute(logger);
+
+		List<Worker> workers = new ArrayList<Worker>(10);
+		for (int i = 0; i < 10; i++) {
+			Worker worker = new Worker(logger);
+			pool.execute(worker);
+			workers.add(worker);
+		}
+		int worker = 0;
+
 		try {
 			ServerSocket server = new ServerSocket(31337);
 			try {
-				Socket client = server.accept();
-				// TODO: make an actor that uses the client connection
+				while (true) {
+					Socket client = server.accept();
+					workers.get(worker).tell(client);
+					worker = (worker + 1) % 10;
+				}
 			} finally {
 				server.close();
 			}
