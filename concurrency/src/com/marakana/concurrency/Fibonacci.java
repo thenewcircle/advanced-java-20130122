@@ -2,11 +2,10 @@ package com.marakana.concurrency;
 
 import java.math.BigInteger;
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
-
-import com.marakana.list.ImmutableList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Fibonacci {
 
@@ -32,27 +31,23 @@ public class Fibonacci {
 	}
 
 	public static class Logger implements Runnable {
-		private final AtomicReference<ImmutableList<String>> messagesRef =
-				new AtomicReference<ImmutableList<String>>(new ImmutableList<String>());
+		private final BlockingQueue<String> messages = new LinkedBlockingQueue<String>();
 
 		@Override
 		public void run() {
 			while (true) {
-				ImmutableList<String> messages;
-				do {
-					messages = messagesRef.get();
-				} while (messages.tail != null && !messagesRef.compareAndSet(messages, messages.tail));
-
-				if (messages.head != null)
-					System.out.println(messages.head);
+				try {
+					System.out.println(messages.take());
+				} catch (InterruptedException e) {
+				}
 			}
 		}
 
 		public void log(String message) {
-			ImmutableList<String> messages;
-			do {
-				messages = messagesRef.get();
-			} while (!messagesRef.compareAndSet(messages, messages.prepend(message)));
+			try {
+				messages.put(message);
+			} catch (InterruptedException e) {
+			}
 		}
 
 	}
