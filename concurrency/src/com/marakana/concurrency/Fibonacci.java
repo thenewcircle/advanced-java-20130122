@@ -2,20 +2,19 @@ package com.marakana.concurrency;
 
 import java.math.BigInteger;
 import java.util.Random;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class Fibonacci {
 
 	private static final Random RANDOM = new Random();
+	private static final Object FIB = new Object();
 
 	public static BigInteger fib(int n) {
 		return n < 2 ? BigInteger.ONE : fib(n - 1).add(fib(n - 2));
 	}
 
-	public static class FibonacciTask implements Runnable {
+	public static class FibonacciTask extends Actor {
 
 		private final Logger logger;
 
@@ -23,33 +22,19 @@ public class Fibonacci {
 			this.logger = logger;
 		}
 
-		@Override
-		public void run() {
-			int n = RANDOM.nextInt(30);
-			logger.log(String.format("fib(%d) = %s", n, fib(n)));
+		protected void receive(Object message) {
+			if (message == FIB) {
+				int n = RANDOM.nextInt(30);
+				logger.tell(String.format("fib(%d) = %s", n, fib(n)));
+				this.tell(FIB);
+			}
 		}
 	}
 
-	public static class Logger implements Runnable {
-		private final BlockingQueue<String> messages = new LinkedBlockingQueue<String>();
-
-		@Override
-		public void run() {
-			while (true) {
-				try {
-					System.out.println(messages.take());
-				} catch (InterruptedException e) {
-				}
-			}
+	public static class Logger extends Actor {
+		protected void receive(Object message) {
+			System.out.println(message);
 		}
-
-		public void log(String message) {
-			try {
-				messages.put(message);
-			} catch (InterruptedException e) {
-			}
-		}
-
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -59,7 +44,9 @@ public class Fibonacci {
 		pool.execute(logger);
 
 		while (true) {
-			pool.execute(new FibonacciTask(logger));
+			FibonacciTask task = new FibonacciTask(logger);
+			pool.execute(task);
+			task.tell(FIB);
 		}
 	}
 
