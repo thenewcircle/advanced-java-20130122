@@ -5,15 +5,32 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
 
 	public static void main(String[] args) {
-		try (ServerSocket server = new ServerSocket(31337);
+		ExecutorService pool = Executors.newCachedThreadPool();
+
+		try {
+			ServerSocket server = new ServerSocket(31337);
+			try {
 				Socket client = server.accept();
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-						client.getInputStream()))) {
-			System.out.println(in.readLine());
+				try {
+					BufferedReader in = new BufferedReader(
+							new InputStreamReader(client.getInputStream()));
+					try {
+						System.out.println(in.readLine());
+					} finally {
+						in.close();
+					}
+				} finally {
+					client.close();
+				}
+			} finally {
+				server.close();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
