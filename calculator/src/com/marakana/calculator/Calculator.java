@@ -38,7 +38,7 @@ public class Calculator {
 		return true;
 	}
 
-	public static int calculate(String expression) {
+	public static Expression parse(String expression) {
 		Stack<Expression> stack = new Stack<Expression>();
 		for (String token : expression.split(" ")) {
 			if (!handleNumber(token, stack) && !handleOperator(token, stack)) {
@@ -46,7 +46,7 @@ public class Calculator {
 						+ token);
 			}
 		}
-		return stack.pop().getValue();
+		return stack.pop();
 	}
 
 	public static void main(String[] args) {
@@ -54,6 +54,7 @@ public class Calculator {
 			System.err.println("Usage: Calculator <expression>");
 			return;
 		}
-		System.out.println(calculate(args[0]));
+		Expression e = parse(args[0]);
+		System.out.format("%s = %d\n", e, e.getValue());
 	}
 }

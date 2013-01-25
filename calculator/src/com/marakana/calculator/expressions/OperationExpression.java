@@ -24,8 +24,14 @@ public class OperationExpression implements Expression {
 		return op;
 	}
 
+	@Override
 	public int getValue() {
 		return op.operate(lhs.getValue(), rhs.getValue());
+	}
+
+	@Override
+	public String toString() {
+		return String.format("(%s %s %s)", lhs, op, rhs);
 	}
 
 	@Override
