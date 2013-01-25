@@ -4,34 +4,6 @@ import java.util.Stack;
 
 public class Calculator {
 
-	private static interface Operator {
-		int operate(int lhs, int rhs);
-	}
-
-	private static class Add implements Operator {
-		public int operate(int lhs, int rhs) {
-			return lhs + rhs;
-		}
-	}
-
-	private static class Subtract implements Operator {
-		public int operate(int lhs, int rhs) {
-			return lhs - rhs;
-		}
-	}
-
-	private static class Multiply implements Operator {
-		public int operate(int lhs, int rhs) {
-			return lhs * rhs;
-		}
-	}
-
-	private static class Divide implements Operator {
-		public int operate(int lhs, int rhs) {
-			return lhs / rhs;
-		}
-	}
-
 	private static boolean handleNumber(String token, Stack<Integer> stack) {
 		try {
 			stack.push(Integer.parseInt(token));
@@ -44,17 +16,17 @@ public class Calculator {
 	private static boolean handleOperator(String token, Stack<Integer> stack) {
 		Operator op;
 		if ("+".equals(token)) {
-			op = new Add();
+			op = Operator.ADD;
 		} else if ("-".equals(token)) {
-			op = new Subtract();
+			op = Operator.SUBTRACT;
 		} else if ("*".equals(token)) {
-			op = new Multiply();
+			op = Operator.MULTIPLY;
 		} else if ("/".equals(token)) {
-			op = new Divide();
+			op = Operator.DIVIDE;
 		} else {
 			return false;
 		}
-		
+
 		int rhs = stack.pop(), lhs = stack.pop();
 		stack.push(op.operate(lhs, rhs));
 		return true;
@@ -64,7 +36,8 @@ public class Calculator {
 		Stack<Integer> stack = new Stack<Integer>();
 		for (String token : expression.split(" ")) {
 			if (!handleNumber(token, stack) && !handleOperator(token, stack)) {
-				throw new IllegalArgumentException("unrecognized token: " + token);
+				throw new IllegalArgumentException("unrecognized token: "
+						+ token);
 			}
 		}
 		return stack.pop();
