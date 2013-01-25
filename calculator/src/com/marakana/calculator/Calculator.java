@@ -4,6 +4,34 @@ import java.util.Stack;
 
 public class Calculator {
 
+	private static interface Operator {
+		int operate(int lhs, int rhs);
+	}
+
+	private static class Add implements Operator {
+		public int operate(int lhs, int rhs) {
+			return lhs + rhs;
+		}
+	}
+
+	private static class Subtract implements Operator {
+		public int operate(int lhs, int rhs) {
+			return lhs - rhs;
+		}
+	}
+
+	private static class Multiply implements Operator {
+		public int operate(int lhs, int rhs) {
+			return lhs * rhs;
+		}
+	}
+
+	private static class Divide implements Operator {
+		public int operate(int lhs, int rhs) {
+			return lhs / rhs;
+		}
+	}
+
 	private static boolean handleNumber(String token, Stack<Integer> stack) {
 		try {
 			stack.push(Integer.parseInt(token));
@@ -14,25 +42,22 @@ public class Calculator {
 	}
 
 	private static boolean handleOperator(String token, Stack<Integer> stack) {
+		Operator op;
 		if ("+".equals(token)) {
-			int rhs = stack.pop(), lhs = stack.pop();
-			stack.push(lhs + rhs);
-			return true;
+			op = new Add();
 		} else if ("-".equals(token)) {
-			int rhs = stack.pop(), lhs = stack.pop();
-			stack.push(lhs - rhs);
-			return true;
+			op = new Subtract();
 		} else if ("*".equals(token)) {
-			int rhs = stack.pop(), lhs = stack.pop();
-			stack.push(lhs * rhs);
-			return true;
+			op = new Multiply();
 		} else if ("/".equals(token)) {
-			int rhs = stack.pop(), lhs = stack.pop();
-			stack.push(lhs / rhs);
-			return true;
+			op = new Divide();
 		} else {
 			return false;
 		}
+		
+		int rhs = stack.pop(), lhs = stack.pop();
+		stack.push(op.operate(lhs, rhs));
+		return true;
 	}
 
 	public static int calculate(String expression) {
