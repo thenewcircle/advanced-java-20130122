@@ -25,6 +25,13 @@ Concurrency
 * implement the producer-consumer pattern using BlockingQueue
 * don't reinvent the wheel: use akka!
 
+Design Patterns
+---------------
+
+* decorator: add behavior to existing object instances (e.g. java.io)
+* composite: build recursive data structures (e.g. abstract syntax trees)
+* visitor: apply arbitrary computation recursively over composite structures
+
 Videos
 ------
 
@@ -41,3 +48,10 @@ Day 2:
 * https://mrkn.s3.amazonaws.com/recordings/advanced-java-20130122/2.2.mov
 * https://mrkn.s3.amazonaws.com/recordings/advanced-java-20130122/2.3.mov
 * https://mrkn.s3.amazonaws.com/recordings/advanced-java-20130122/2.4.mov
+
+Day 3:
+
+* https://mrkn.s3.amazonaws.com/recordings/advanced-java-20130122/3.1.mov
+* https://mrkn.s3.amazonaws.com/recordings/advanced-java-20130122/3.2.mov
+* https://mrkn.s3.amazonaws.com/recordings/advanced-java-20130122/3.3.mov
+* https://mrkn.s3.amazonaws.com/recordings/advanced-java-20130122/3.4.mov
