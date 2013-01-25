@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import com.marakana.calculator.expressions.Expression;
+import com.marakana.calculator.expressions.NumberExpression;
+import com.marakana.calculator.expressions.OperationExpression;
+
 public class Calculator {
 
 	private static final Map<String, Operator> operators;
@@ -14,35 +18,35 @@ public class Calculator {
 		}
 	}
 
-	private static boolean handleNumber(String token, Stack<Integer> stack) {
+	private static boolean handleNumber(String token, Stack<Expression> stack) {
 		try {
-			stack.push(Integer.parseInt(token));
+			stack.push(new NumberExpression(Integer.parseInt(token)));
 			return true;
 		} catch (NumberFormatException e) {
 			return false;
 		}
 	}
 
-	private static boolean handleOperator(String token, Stack<Integer> stack) {
+	private static boolean handleOperator(String token, Stack<Expression> stack) {
 		Operator op = operators.get(token);
 		if (op == null) {
 			return false;
 		}
 
-		int rhs = stack.pop(), lhs = stack.pop();
-		stack.push(op.operate(lhs, rhs));
+		Expression rhs = stack.pop(), lhs = stack.pop();
+		stack.push(new OperationExpression(lhs, rhs, op));
 		return true;
 	}
 
 	public static int calculate(String expression) {
-		Stack<Integer> stack = new Stack<Integer>();
+		Stack<Expression> stack = new Stack<Expression>();
 		for (String token : expression.split(" ")) {
 			if (!handleNumber(token, stack) && !handleOperator(token, stack)) {
 				throw new IllegalArgumentException("unrecognized token: "
 						+ token);
 			}
 		}
-		return stack.pop();
+		return stack.pop().getValue();
 	}
 
 	public static void main(String[] args) {

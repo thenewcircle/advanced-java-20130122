@@ -24,6 +24,10 @@ public class OperationExpression implements Expression {
 		return op;
 	}
 
+	public int getValue() {
+		return op.operate(lhs.getValue(), rhs.getValue());
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
