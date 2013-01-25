@@ -55,6 +55,6 @@ public class Calculator {
 			return;
 		}
 		Expression e = parse(args[0]);
-		System.out.format("%s = %d\n", e, e.getValue());
+		System.out.format("%s = %d\n", e.accept(new ExpressionRenderer()), e.accept(new ExpressionEvaluator()));
 	}
 }

@@ -1,6 +1,5 @@
 package com.marakana.calculator.expressions;
 
 public interface Expression {
-	int getValue();
-	String toString();
+	<A> A accept(ExpressionVisitor<A> visitor);
 }

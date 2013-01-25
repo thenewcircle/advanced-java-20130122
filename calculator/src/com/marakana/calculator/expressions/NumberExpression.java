@@ -7,14 +7,13 @@ public class NumberExpression implements Expression {
 		this.value = value;
 	}
 
-	@Override
 	public int getValue() {
 		return value;
 	}
 
 	@Override
-	public String toString() {
-		return String.valueOf(value);
+	public <A> A accept(ExpressionVisitor<A> visitor) {
+		return visitor.visitNumber(this);
 	}
 
 	@Override

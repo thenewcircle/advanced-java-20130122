@@ -25,13 +25,8 @@ public class OperationExpression implements Expression {
 	}
 
 	@Override
-	public int getValue() {
-		return op.operate(lhs.getValue(), rhs.getValue());
-	}
-
-	@Override
-	public String toString() {
-		return String.format("(%s %s %s)", lhs, op, rhs);
+	public <A> A accept(ExpressionVisitor<A> visitor) {
+		return visitor.visitOperation(this);
 	}
 
 	@Override
